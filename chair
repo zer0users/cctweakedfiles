@@ -1,0 +1,32 @@
+-- Poner oak_stairs justo en la posición del Command Computer
+local setblockCmd = "setblock ~ ~ ~ minecraft:oak_stairs"
+
+-- Invocar cerdo con montura, invisible e invulnerable un bloque arriba
+local summonCmd = [[
+summon pig ~ ~1 ~ {
+  CustomName:'{"text":"Love","color":"red","italic":false}',
+  CustomNameVisible:1b,
+  Saddle:1b,
+  Invulnerable:1b,
+  ActiveEffects:[{
+    Id:14,
+    Amplifier:0,
+    Duration:2147483647,
+    ShowParticles:0b
+  }]
+}
+]]
+
+local success, err = commands.exec(setblockCmd)
+if not success then
+  print("Error colocando la escalera: "..tostring(err))
+  return
+end
+
+local success2, err2 = commands.exec(summonCmd)
+if not success2 then
+  print("Error invocando cerdo: "..tostring(err2))
+  return
+end
+
+print("¡Escalera colocada y cerdito invocado con montura, invisible e invulnerable!")
