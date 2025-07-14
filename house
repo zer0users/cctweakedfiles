@@ -1,0 +1,60 @@
+-- build_house.lua
+-- Construye una casa de madera justo delante del Command Computer
+-- Compatible con Minecraft 1.19+ y CC:Tweaked recientes
+--------------------------------------------------------------
+
+local exec = commands.exec
+
+-- Helpers ----------------------------------------------------
+local function fill(x1,y1,z1, x2,y2,z2, block)
+  exec(("fill ~%d ~%d ~%d ~%d ~%d ~%d %s"):format(
+       x1,y1,z1, x2,y2,z2, block))
+end
+
+local function set(x,y,z, block)
+  exec(("setblock ~%d ~%d ~%d %s"):format(x,y,z, block))
+end
+
+-- Dimensiones de la casa ------------------------------------
+local W, L, H = 7, 9, 4   -- ancho (X), largo (Z), alto interior+techo (Y)
+
+-- 1) Suelo ---------------------------------------------------
+fill(1, 0, 1,  W, 0, L, "oak_planks")
+
+-- 2) Paredes exteriores -------------------------------------
+-- Frente y fondo
+fill(1, 1, 1,  W, H,   1,  "oak_planks")
+fill(1, 1, L,  W, H,   L,  "oak_planks")
+-- Laterales
+fill(1, 1, 2,  1, H, L-1,  "oak_planks")
+fill(W, 1, 2,  W, H, L-1,  "oak_planks")
+
+-- 3) Vaciar interior ----------------------------------------
+fill(2, 1, 2,  W-1, H-1, L-1, "air")
+
+-- 4) Troncos en las cuatro esquinas -------------------------
+for _,pos in ipairs({{1,1,1}, {W,1,1}, {1,1,L}, {W,1,L}}) do
+  local x,y,z = table.unpack(pos)
+  fill(x, 1, z,  x, H, z, "oak_log[axis=y]")
+end
+
+-- 5) Techo ---------------------------------------------------
+fill(1, H+1, 1,  W, H+1, L, "spruce_planks")
+
+-- 6) Puerta (centro del frente) -----------------------------
+local doorX = math.floor(W / 2) + 1
+set(doorX, 1, 1, "oak_door[facing=south,half=lower]")
+set(doorX, 2, 1, "oak_door[facing=south,half=upper]")
+
+-- 7) Ventanas (frente y fondo, altura Y=2) ------------------
+-- Frente
+fill(2, 2, 1,  W-1, 2, 1, "glass_pane")
+-- Fondo
+fill(2, 2, L,  W-1, 2, L, "glass_pane")
+
+-- 8) Mobiliario interior ------------------------------------
+set(2, 1, 2, "furnace[facing=south]")
+set(3, 1, 2, "crafting_table")
+
+-- 9) ¡Mensaje final! ----------------------------------------
+commands.say("DIOS TE BENDIGA, ¡casa construida! ☺")
