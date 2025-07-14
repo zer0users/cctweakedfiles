@@ -1,0 +1,145 @@
+-- Instalador de LoveOS con amor <3
+local term = require("term")
+local fs = require("fs")
+
+-- Mensaje de bienvenida
+term.clear()
+term.setCursorPos(1, 1)
+print("Welcome and God bless to LoveOS!\n")
+
+-- Menú de instalación
+local options = {"Install LoveOS", "About", "Exit"}
+local selected = 1
+
+local function drawMenu()
+    for i, option in ipairs(options) do
+        term.setCursorPos(1, i + 2)
+        if i == selected then
+            term.write("> " .. option)
+        else
+            term.write("  " .. option)
+        end
+    end
+end
+
+-- Función para instalar LoveOS
+local function installLoveOS()
+    term.clear()
+    term.setCursorPos(1, 1)
+    print("Installing LoveOS with love..")
+    sleep(1)
+    
+    -- Crear estructura de carpetas
+    print("Creating folders..")
+    fs.makeDir("loveos")
+    fs.makeDir("loveos/boot")
+    fs.makeDir("loveos/apps")
+    sleep(0.5)
+    
+    -- Crear startup.lua
+    print("Creating startup.lua..")
+    local startupFile = io.open("startup.lua", "w")
+    startupFile:write('shell.run("loveos/boot/boot.lua")')
+    startupFile:close()
+    sleep(0.5)
+    
+    -- Crear boot.lua
+    print("Creating boot.lua..")
+    local bootFile = io.open("loveos/boot/boot.lua", "w")
+    bootFile:write([[
+    -- LoveOS Bootloader
+    term.clear()
+    term.setCursorPos(1, 1)
+    print("LoveOS - Cargado con amor <3")
+    print("Dios te bendiga!")
+    shell.run("loveos/apps/menu.lua")  -- Ejecutar menú principal
+    ]])
+    bootFile:close()
+    sleep(0.5)
+    
+    -- Crear apps (ejemplo: menu.lua)
+    print("Creating apps..")
+    local menuApp = io.open("loveos/apps/menu.lua", "w")
+    menuApp:write([[
+    -- Menú principal de LoveOS
+    while true do
+        term.clear()
+        term.setCursorPos(1, 1)
+        print("=== LoveOS Menu ===")
+        print("1. App 1 (Amor)")
+        print("2. App 2 (Paz)")
+        print("3. App 3 (Fe)")
+        print("4. Salir")
+        
+        local input = tonumber(read())
+        if input == 1 then
+            print("¡Dios te ama! <3")
+            sleep(2)
+        elseif input == 4 then
+            break
+        end
+    end
+    ]])
+    menuApp:close()
+    
+    print("\nThe installation is Done with love!")
+    print("Do you want to reboot to change the OS?")
+    
+    local rebootOptions = {"Yes", "No"}
+    local rebootChoice = 1
+    while true do
+        term.setCursorPos(1, 10)
+        for i, option in ipairs(rebootOptions) do
+            term.setCursorPos(1, 10 + i)
+            if i == rebootChoice then
+                term.write("> " .. option)
+            else
+                term.write("  " .. option)
+            end
+        end
+        
+        local event, key = os.pullEvent("key")
+        if key == keys.up and rebootChoice > 1 then
+            rebootChoice = rebootChoice - 1
+        elseif key == keys.down and rebootChoice < #rebootOptions then
+            rebootChoice = rebootChoice + 1
+        elseif key == keys.enter then
+            break
+        end
+    end
+    
+    if rebootChoice == 1 then
+        os.reboot()
+    else
+        term.clear()
+        term.setCursorPos(1, 1)
+        print("LoveOS instalado. ¡Dios te bendiga!")
+    end
+end
+
+-- Bucle principal del menú
+while true do
+    drawMenu()
+    local event, key = os.pullEvent("key")
+    
+    if key == keys.up and selected > 1 then
+        selected = selected - 1
+    elseif key == keys.down and selected < #options then
+        selected = selected + 1
+    elseif key == keys.enter then
+        if selected == 1 then
+            installLoveOS()
+            break
+        elseif selected == 2 then
+            term.clear()
+            term.setCursorPos(1, 1)
+            print("Love - 2025 God bless you")
+            sleep(2)
+        elseif selected == 3 then
+            term.clear()
+            term.setCursorPos(1, 1)
+            print("Adiós, que Dios te bendiga.")
+            return
+        end
+    end
+end
