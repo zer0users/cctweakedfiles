@@ -1,0 +1,54 @@
+-- /loveos/apps/love-music.lua
+-- Música de Amor Infinita (Versión Extendida) 💖
+local speaker = peripheral.find("speaker")
+
+if not speaker then
+  print("No se encontró el altavoz 😢")
+  return
+end
+
+local instrument = "pling" -- Puedes probar con "harp", "bell", etc.
+
+-- 🎵 Melodía: estrofa + estribillo
+local melody = {
+  -- Estrofa
+  {note=12, time=0.3}, -- Do
+  {note=14, time=0.3}, -- Re
+  {note=15, time=0.4}, -- Mi
+  {note=14, time=0.2}, -- Re
+  {note=17, time=0.4}, -- Sol
+  {note=19, time=0.3}, -- La
+  {note=21, time=0.3}, -- Si
+  {note=19, time=0.5}, -- La
+  {note=17, time=0.3}, -- Sol
+  {note=15, time=0.3}, -- Mi
+  {note=14, time=0.3}, -- Re
+  {note=12, time=0.6}, -- Do
+  
+  -- Estribillo
+  {note=12, time=0.2},
+  {note=12, time=0.2},
+  {note=15, time=0.4},
+  {note=17, time=0.4},
+  {note=15, time=0.2},
+  {note=14, time=0.3},
+  {note=14, time=0.2},
+  {note=12, time=0.5},
+  {note=17, time=0.3},
+  {note=19, time=0.3},
+  {note=21, time=0.3},
+  {note=22, time=0.3},
+  {note=21, time=0.2},
+  {note=19, time=0.4},
+  {note=17, time=0.5},
+  {note=15, time=0.6},
+}
+
+print("💖 Reproduciendo música de amor extendida... presiona Ctrl+T para detener")
+
+while true do
+  for _, note in ipairs(melody) do
+    speaker.playNote(instrument, 2, note.note)
+    os.sleep(note.time)
+  end
+end
