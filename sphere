@@ -1,0 +1,31 @@
+-- explosivo.lua 💥📟
+-- Invoca TNT instantáneo que se expande en anillos cuadrados
+
+local ALTURA = 0       -- 0 = misma altura que la compu
+local PAUSA  = 1       -- Tiempo entre cada expansión (s)
+local MAX_LADO = 300   -- Puedes subirlo si deseas
+
+local lado = 1
+while lado <= MAX_LADO do
+  local function summon(x, z)
+    local cmd = string.format(
+      'summon tnt ~%d ~%d ~%d {Fuse:0}', x, ALTURA, z
+    )
+    commands.exec(cmd)
+  end
+
+  -- Frentes superior e inferior
+  for x = -lado, lado do
+    summon(x, -lado)
+    summon(x,  lado)
+  end
+
+  -- Lados izquierdo y derecho (sin esquinas repetidas)
+  for z = -lado + 1, lado - 1 do
+    summon(-lado, z)
+    summon( lado, z)
+  end
+
+  lado = lado + 1
+  sleep(PAUSA)
+end
