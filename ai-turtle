@@ -1,0 +1,80 @@
+-- Configuración inicial
+local turtle = require("turtle")  -- Usamos la API de turtle
+local radar = require("radar")    -- Radar para detectar entidades (si está disponible)
+local combat = require("combat")  -- Para atacar (si está disponible)
+
+-- Función para detectar mobs cercanos
+local function hayMobsCercanos()
+    local detectado = false
+    for i = 1, 4 do  -- Revisar en las 4 direcciones
+        if turtle.detect() then
+            local data = turtle.inspect()
+            if data and data.name:find("mob") then  -- Si es un mob (ej. "minecraft:zombie")
+                detectado = true
+                break
+            end
+        end
+        turtle.turnRight()
+    end
+    return detectado
+end
+
+-- Función para atacar si hay enemigos
+local function atacarSiEsNecesario()
+    if hayMobsCercanos() then
+        turtle.attack()  -- Ataca al mob frente a ella
+        return true
+    end
+    return false
+end
+
+-- Función para colocar bloques si hay espacio
+local function colocarBloqueSiEsPosible()
+    if not turtle.detectDown() then
+        turtle.select(1)  -- Asume que el bloque está en el slot 1
+        turtle.placeDown()
+        return true
+    end
+    return false
+end
+
+-- Función para moverse inteligentemente
+local function moverseInteligente()
+    if not turtle.detect() then
+        turtle.forward()
+    else
+        -- Si hay un bloque, intenta esquivar
+        turtle.turnLeft()
+        if not turtle.detect() then
+            turtle.forward()
+        else
+            turtle.turnRight()
+            turtle.turnRight()
+            if not turtle.detect() then
+                turtle.forward()
+            else
+                turtle.turnLeft()  -- Vuelve a la posición original
+            end
+        end
+    end
+end
+
+-- Función principal (AI Loop)
+while true do
+    -- 1. Verifica y ataca mobs
+    if atacarSiEsNecesario() then
+        print("¡Mob detectado! Atacando...")
+    end
+
+    -- 2. Coloca bloques si es necesario
+    if colocarBloqueSiEsPosible() then
+        print("Colocando bloque...")
+    end
+
+    -- 3. Movimiento inteligente
+    moverseInteligente()
+    print("Movimiento completado.")
+
+    -- 4. Pequeña pausa para no saturar
+    os.sleep(0.5)
+end
