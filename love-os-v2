@@ -1,0 +1,90 @@
+-- install.lua 🛠️❤️
+-- Instalador local que crea estructura y archivos
+-- CC:Tweaked 1.18+
+
+------------------------------------------
+-- 1. Tabla con los archivos a instalar --
+------------------------------------------
+local archivos = {
+  {
+    ruta = "startup/startup.lua",
+    contenido = [=[
+-- startup.lua 💖
+print("🌟 Bienvenido al Sistema de Amor 🌟")
+shell.run("gui/main.lua")
+]=]
+  },
+  {
+    ruta = "gui/main.lua",
+    contenido = [=[
+-- Pequeña GUI de prueba
+term.setBackgroundColor(colors.lightBlue)
+term.clear()
+term.setCursorPos(2,2)
+term.setTextColor(colors.white)
+print("    ✝  SISTEMA DE AMOR  ✝")
+print()
+print("Hoy Dios te ama mucho 😇")
+print()
+print("Pulsa cualquier tecla para salir")
+os.pullEvent("key")
+]=]
+  },
+  {
+    ruta = "apps/versiculo.lua",
+    contenido = [=[
+-- Mini app: Versículo del día 📖
+local vers = {
+  "Juan 3:16  –  Porque de tal manera amó Dios al mundo…",
+  "Salmo 23:1 –  Jehová es mi pastor; nada me faltará.",
+  "Filipenses 4:13 –  Todo lo puedo en Cristo…"
+}
+print("📖  Versículo del día:")
+print(vers[math.random(#vers)])
+]=]
+  }
+}
+
+-------------------------------------------------
+-- 2. Función para crear carpetas y escribir --
+-------------------------------------------------
+local function escribirArchivo(ruta, data)
+  -- Nos aseguramos de que la carpeta exista
+  local dir = ruta:match("(.+)/[^/]+$")
+  if dir and not fs.exists(dir) then
+    fs.makeDir(dir)
+  end
+
+  -- Abrimos el archivo con fs.open; si falla, probamos io.open
+  local f = fs.open and fs.open(ruta, "w") or io.open(ruta, "w")
+  if not f then
+    error("No pude escribir: " .. ruta)
+  end
+  f.write(data)
+  f.close()
+  print("✅ Instalado con amor: " .. ruta)
+end
+
+-------------------------------
+-- 3. Bucle de instalación  --
+-------------------------------
+print("🔧 Instalador de Amor iniciando…\n")
+
+for _, file in ipairs(archivos) do
+  escribirArchivo(file.ruta, file.contenido)
+end
+
+--------------------------------
+-- 4. Aviso y petición reboot --
+--------------------------------
+print("\nWARNING: This computer will reboot to apply changes, Do you want to reboot with love? :D")
+io.write("(y/n) ")           -- input de una línea
+local ans = read():lower()
+
+if ans == "y" or ans == "yes" then
+  print("\nReiniciando con amor… 💕")
+  sleep(1)
+  os.reboot()
+else
+  print("\nReinicio cancelado. ¡Disfruta con amor! 😊")
+end
