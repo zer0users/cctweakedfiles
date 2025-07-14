@@ -1,0 +1,36 @@
+-- parkour.lua 🪵🏃‍♂️
+-- Crea parkour infinito: cuando un jugador pisa roble, aparece otro bloque
+-- Requiere CC:Tweaked + commandComputerEnabled = true
+
+math.randomseed(os.time())
+
+local intervalo = 0.25      -- segundos entre chequeos
+local rangoMin  = -3        -- distancia mínima X/Z
+local rangoMax  =  3        -- distancia máxima X/Z
+
+while true do
+  ------------------------------------------------------------------
+  -- Elegimos un desplazamiento aleatorio que NO sea (0,0) ---------
+  ------------------------------------------------------------------
+  local dx, dz
+  repeat
+    dx = math.random(rangoMin, rangoMax)
+    dz = math.random(rangoMin, rangoMax)
+  until dx ~= 0 or dz ~= 0
+
+  ------------------------------------------------------------------
+  -- Comando mágico:                                               
+  --   • Se ejecuta "as" y "at" cada jugador (@a)                  
+  --   • Verifica si el bloque bajo sus pies es roble              
+  --   • Coloca otro roble a la misma altura, desplazado dx/dz     
+  --   • El sufijo  "keep" evita sustituir bloques existentes      
+  ------------------------------------------------------------------
+  local cmd = string.format(
+    'execute as @a at @s if block ~ ~-1 ~ minecraft:oak_planks ' ..
+    'run setblock ~%d ~-1 ~%d minecraft:oak_planks keep',
+    dx, dz
+  )
+  commands.exec(cmd)
+
+  sleep(intervalo)
+end
