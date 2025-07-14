@@ -1,0 +1,179 @@
+-- android_install.lua 📱💖
+-- Instalador de un mini “Android” para Pocket Computer (CC:Tweaked)
+-- Ejecuta:   lua android_install.lua
+-------------------------------------------------------------------
+local FILES = {
+  -- Arranque principal -------------------------------------------------
+  {
+    path = "android/boot.lua",
+    data = [=[
+-- android/boot.lua 📱
+-- Mini sistema “Android” para Pocket Computer
+local termW, termH = term.getSize()
+local apps = {
+  {name = "Terminal", file = "android/apps/terminal.lua"},
+  {name = "Notas",    file = "android/apps/notes.lua"},
+  {name = "Versículo",file = "android/apps/verse.lua"},
+  {name = "Calculadora", file = "android/apps/calc.lua"},
+  {name = "Reloj",     file = "android/apps/clock.lua"},
+}
+local sel = 1
+
+local function draw()
+  term.setBackgroundColor(colors.black)
+  term.setTextColor(colors.white)
+  term.clear()
+  term.setCursorPos(2,1)
+  print("☝ Usa ↑/↓ y Enter para abrir apps")
+  for i,a in ipairs(apps) do
+    term.setCursorPos(4, i+2)
+    if i==sel then
+      term.setBackgroundColor(colors.blue)
+      term.setTextColor(colors.white)
+    else
+      term.setBackgroundColor(colors.black)
+      term.setTextColor(colors.lightGray)
+    end
+    term.write(string.format("%d. %s", i, a.name .. string.rep(" ", 12-#a.name)))
+  end
+end
+
+local function main()
+  draw()
+  while true do
+    local e, p = os.pullEvent()
+    if e == "key" then
+      if p == keys.up   then sel = sel>1 and sel-1 or #apps; draw() end
+      if p == keys.down then sel = sel<#apps and sel+1 or 1; draw() end
+      if p == keys.enter then
+        term.setBackgroundColor(colors.black) term.clear()
+        shell.run(apps[sel].file)
+        draw()
+      end
+    end
+  end
+end
+
+local ok, err = pcall(main)
+if not ok and err == "Terminated" then
+  -- Si se presiona Ctrl+T, reiniciar para evitar salir al shell
+  os.reboot()
+end
+]=]
+  },
+
+  -- Apps --------------------------------------------------------------
+  {
+    path = "android/apps/terminal.lua",
+    data = [=[
+-- Terminal: simplemente abre el shell nativo
+shell.run("shell")
+]=]
+  },
+
+  {
+    path = "android/apps/notes.lua",
+    data = [=[
+-- Notas sencillas
+term.clear() term.setCursorPos(1,1)
+print("Notas de Amor (Ctrl+T para salir)")
+print("Escribe y se guardará en notes.txt")
+local fh = fs.open("notes.txt", "a")
+while true do
+  local l = read()
+  if l == "" then break end
+  fh.writeLine(l)
+end
+fh.close()
+]=]
+  },
+
+  {
+    path = "android/apps/verse.lua",
+    data = [=[
+-- Versículo aleatorio
+local verses = {
+  "Juan 3:16 – Porque de tal manera amó Dios…",
+  "Salmo 23:1 – Jehová es mi pastor; nada me faltará.",
+  "Filipenses 4:13 – Todo lo puedo en Cristo…",
+}
+term.clear() term.setCursorPos(1,1)
+print("Versículo del día:\n")
+print(verses[math.random(#verses)])
+print("\nPulsa cualquier tecla para volver…")
+os.pullEvent("key")
+]=]
+  },
+
+  {
+    path = "android/apps/calc.lua",
+    data = [=[
+-- Calculadora simple
+term.clear() term.setCursorPos(1,1)
+print("🧮 Calculadora de Amor")
+write("Número 1: ") local a = tonumber(read())
+write("Operación (+ - * /): ") local op = read()
+write("Número 2: ") local b = tonumber(read())
+local res = ""
+if op == "+" then res = a + b
+elseif op == "-" then res = a - b
+elseif op == "*" then res = a * b
+elseif op == "/" then res = b ~= 0 and (a / b) or "∞"
+else res = "Operación inválida"
+end
+print("\nResultado: ", res)
+print("\nPulsa una tecla para volver…")
+os.pullEvent("key")
+]=]
+  },
+
+  {
+    path = "android/apps/clock.lua",
+    data = [=[
+-- Reloj en tiempo real
+term.clear()
+term.setCursorPos(1,1)
+print("🕒 Reloj del sistema (Ctrl+T para salir)")
+while true do
+  local t = textutils.formatTime(os.time(), true)
+  term.setCursorPos(1,3)
+  term.clearLine()
+  term.write("Hora: " .. t)
+  sleep(1)
+end
+]=]
+  },
+
+  -- Auto‑arranque raíz -----------------------------------------------
+  {
+    path = "startup.lua",
+    data = "shell.run(\"android/boot.lua\")\n"
+  }
+}
+
+-----------------------------------------------------------------------
+-- Función auxiliar: escribe un archivo creando carpetas si faltan ----
+-----------------------------------------------------------------------
+local function writeFile(path, data)
+  local dir = path:match("(.+)/[^/]+")
+  if dir and not fs.exists(dir) then fs.makeDir(dir) end
+  local f = fs.open(path, "w")
+  if not f then error("❌ No se pudo escribir "..path) end
+  f.write(data)
+  f.close()
+  print("✅ "..path)
+end
+
+print("\n📲 Instalando Android Pocket OS…\n")
+for _,file in ipairs(FILES) do writeFile(file.path, file.data) end
+
+print("\nWARNING: This computer will reboot to apply changes, Do you want to reboot with love? :D")
+write("(y/n) ")
+local ans = read():lower()
+if ans=="y" or ans=="yes" then
+  print("\nReiniciando con amor… 💖")
+  sleep(1)
+  os.reboot()
+else
+  print("\nInstalación completa. Reinicia manualmente cuando quieras. 😊")
+end
