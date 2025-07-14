@@ -1,0 +1,25 @@
+-- lluvia_azul.lua 💙
+-- Lluvia de tintes azules llamados "AMOR"
+
+local radio = 100          -- Radio en bloques desde el Command Computer
+local altura = 120         -- Altura desde la que caen
+local cantidad = 40        -- Cuántos por ciclo
+local espera = 1.5         -- Tiempo entre ciclos (segundos)
+
+local function lluviaDeAmorAzul()
+  for i = 1, cantidad do
+    local dx = math.random(-radio, radio)
+    local dz = math.random(-radio, radio)
+    local cmd = string.format(
+      'summon item ~%d %d ~%d {Item:{id:"minecraft:blue_dye",Count:1b,tag:{display:{Name:\'{"text":"AMOR","color":"blue","italic":false}\'}}}}',
+      dx, altura, dz
+    )
+    commands.exec(cmd)
+  end
+end
+
+-- Lluvia infinita
+while true do
+  lluviaDeAmorAzul()
+  sleep(espera)
+end
