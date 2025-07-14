@@ -1,0 +1,79 @@
+-- love-os installer for CC: Tweaked Pocket Computer
+-- This script will replace CraftOS with LoveOS
+
+-- Spinner animation frames\local spinner = {"|","/","-","\\"}
+local function spin(duration)
+  local t0 = os.clock()
+  local i = 1
+  while os.clock() - t0 < duration do
+    term.write(spinner[i])
+    os.sleep(0.1)
+    term.write("\b")
+    i = (i % #spinner) + 1
+  end
+end
+
+-- Prompt user for installation
+tprint = term.write
+print("WARNING: Installing LoveOS to this computer will replace your system (CraftOS > LoveOS)")
+term.write("Do you want to continue with Love? (y/n) ")
+local answer = read():lower()
+if answer ~= "y" then
+  print("Installation aborted. God bless you!")
+  return
+end
+
+-- Erase filesystem except this installer and ROM
+print("Erasing..")
+local program = shell.getRunningProgram()
+for _, item in ipairs(fs.list("/")) do
+  if item ~= program and item ~= "rom" then
+    local path = "/" .. item
+    if fs.isDir(path) then
+      fs.delete(path)
+    else
+      fs.delete(path)
+    end
+  end
+end
+
+-- Show erase animation
+spin(2)
+print()
+
+-- Create LoveOS directories and files
+print("Installing LoveOS..")
+fs.makeDir("/loveos")
+fs.makeDir("/loveos/apps")
+
+-- Write startup.lua
+defaultBoot = [[
+-- LoveOS startup script
+os.pullEvent = os.pullEventRaw
+-- Clear screen and show banner
+term.clear()
+term.setCursorPos(1,1)
+local stages = {"L","Lo","Lov","Love","LoveO","LoveOS"}
+for _, s in ipairs(stages) do
+  print(s)
+  os.sleep(0.2)
+end
+print("LoveOS (God bless you!)")
+-- Spinner loop with greeting
+local spinFrames = {"/","-","|","\\"}
+while true do
+  for _, f in ipairs(spinFrames) do
+    term.write(f)
+    os.sleep(0.2)
+    term.write("\b")
+  end
+end
+]]
+local f = fs.open("/startup.lua","w")
+f.write(defaultBoot)
+f.close()
+
+print("LoveOS installation Done, God bless you!")
+print("Press Enter to reboot...")
+read()
+os.reboot()
