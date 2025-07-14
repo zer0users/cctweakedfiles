@@ -1,0 +1,23 @@
+-- puente.lua 🌉
+-- Genera un puente larguísimo si un jugador pisa un bloque de roble
+
+local LARGO    = 1000      -- longitud del puente hacia +X
+local INTERVAL = 0.25      -- segundos entre chequeos
+
+while true do
+  ----------------------------------------------------------------
+  --  Coloca (fill) una línea de roble:                          --
+  --   • por cada jugador (@a)                                   --
+  --   • si el bloque bajo sus pies es oak_planks                --
+  --   • desde ~1 hasta ~LARGO en X, a la misma altura (Y‑1)     --
+  --   • 'keep' evita sobrescribir bloques que ya existan        --
+  ----------------------------------------------------------------
+  local cmd = string.format(
+    'execute as @a at @s if block ~ ~-1 ~ minecraft:oak_planks ' ..
+    'run fill ~1 ~-1 ~ ~%d ~-1 ~ minecraft:oak_planks keep',
+    LARGO
+  )
+  commands.exec(cmd)
+
+  sleep(INTERVAL)
+end
