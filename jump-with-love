@@ -1,0 +1,18 @@
+while true do
+  local players = commands.getPlayers()
+  for _,player in ipairs(players) do
+    local data = commands.getBlockInfo(player)
+    local x, y, z = commands.getPlayerPos(player)
+    x, y, z = math.floor(x), math.floor(y - 1), math.floor(z)
+
+    local ok, block = commands.getBlock(x.." "..y.." "..z)
+    if ok and block.name == "minecraft:oak_planks" then
+      local dx = math.random(-2, 2)
+      local dz = math.random(-2, 2)
+      if dx ~= 0 or dz ~= 0 then
+        commands.setBlock((x + dx).." "..(y).." "..(z + dz), "minecraft:oak_planks")
+      end
+    end
+  end
+  os.sleep(0.2)
+end
