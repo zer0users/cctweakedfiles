@@ -1,0 +1,36 @@
+-- agua_infinita.lua 🌊📟
+-- Coloca anillos cuadrados de agua que se expanden, sin tocar la Command Computer
+
+-------------------------------------------------
+-- CONFIGURACIÓN RÁPIDA -------------------------
+-------------------------------------------------
+local ALTURA   = 0       -- 0 = mismo Y donde está la compu
+local PAUSA    = 0.75    -- segundos entre cada “crecimiento”
+local MAX_LADO = 3000    -- por si quieres cortar el bucle algún día
+
+-------------------------------------------------
+-- FUNCIÓN AUXILIAR fill ------------------------
+-------------------------------------------------
+local function fill(x1,z1, x2,z2)
+  -- Agua fuente (level=0) + “replace air” para no reescribir bloques sólidos
+  local cmd = string.format(
+    'fill ~%d ~%d ~%d ~%d ~%d ~%d minecraft:water[level=0] replace air',
+    x1, ALTURA, z1,   x2, ALTURA, z2
+  )
+  commands.exec(cmd)
+end
+
+-------------------------------------------------
+-- BUCLE PRINCIPAL ------------------------------
+-------------------------------------------------
+local lado = 1   -- arranca con anillo 1×1 (no toca el centro)
+while lado <= MAX_LADO do
+  -- Coloca los cuatro lados del anillo cuadrado de tamaño “lado”
+  fill(-lado, -lado,  lado, -lado)  -- Frente
+  fill(-lado,  lado,  lado,  lado)  -- Fondo
+  fill(-lado, -lado, -lado,  lado)  -- Izquierda
+  fill( lado, -lado,  lado,  lado)  -- Derecha
+
+  lado = lado + 1      -- ¡Crece para el próximo ciclo!
+  sleep(PAUSA)
+end
