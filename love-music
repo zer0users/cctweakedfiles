@@ -1,0 +1,34 @@
+-- /loveos/apps/love-music.lua
+-- Música de Amor Infinita 💖
+local speaker = peripheral.find("speaker")
+
+if not speaker then
+  print("No se encontró el altavoz 😢")
+  return
+end
+
+-- Notas de la canción (como tono entre 0-24)
+local melody = {
+  {note=12, time=0.3},  -- Do
+  {note=14, time=0.3},  -- Re
+  {note=15, time=0.4},  -- Mi
+  {note=14, time=0.2},  -- Re
+  {note=17, time=0.4},  -- Sol
+  {note=19, time=0.3},  -- La
+  {note=17, time=0.3},  -- Sol
+  {note=15, time=0.5},  -- Mi
+  {note=14, time=0.3},  -- Re
+  {note=12, time=0.6},  -- Do
+}
+
+-- Instrumento romántico (pling o harp)
+local instrument = "pling"
+
+print("💖 Reproduciendo música de amor... presiona Ctrl+T para detener")
+
+while true do
+  for _, note in ipairs(melody) do
+    speaker.playNote(instrument, 2, note.note)
+    os.sleep(note.time)
+  end
+end
