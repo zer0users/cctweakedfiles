@@ -1,0 +1,53 @@
+-- parkour_auto.lua 🪵⚡
+-- Parkour que genera bloques de roble al pisarlos y los elimina 1s después
+
+math.randomseed(os.time())
+
+local intervalo = 0.2     -- Intervalo entre chequeos
+local vida = 1            -- Tiempo de vida del bloque
+
+-- Cola de bloques para borrar después
+local cola = {}
+
+while true do
+  -- Desplazamiento aleatorio para colocar el próximo bloque
+  local dx, dz
+  repeat
+    dx = math.random(-3, 3)
+    dz = math.random(-3, 3)
+  until dx ~= 0 or dz ~= 0
+
+  -- Ejecuta el comando para cada jugador que esté sobre oak_planks
+  local cmd = string.format(
+    'execute as @a at @s if block ~ ~-1 ~ minecraft:oak_planks ' ..
+    'run setblock ~%d ~-1 ~%d minecraft:oak_planks keep',
+    dx, dz
+  )
+  commands.exec(cmd)
+
+  -- Detecta jugadores para saber dónde colocar y borrar luego
+  local result = {commands.exec("execute as @a at @s if block ~ ~-1 ~ minecraft:oak_planks run data get entity @s Pos")}
+  for _,line in ipairs(result) do
+    -- Extraemos posición del jugador del resultado del comando
+    local x, y, z = line:match("([-%d%.]+)d, ([-%d%.]+)d, ([-%d%.]+)d")
+    if x and y and z then
+      local bx = math.floor(tonumber(x) + dx)
+      local by = math.floor(tonumber(y) - 1)
+      local bz = math.floor(tonumber(z) + dz)
+      -- Guardamos la posición para eliminar después
+      table.insert(cola, {x = bx, y = by, z = bz, t = os.clock()})
+    end
+  end
+
+  -- Revisa qué bloques ya deben desaparecer
+  local ahora = os.clock()
+  for i = #cola, 1, -1 do
+    local b = cola[i]
+    if ahora - b.t >= vida then
+      commands.exec(string.format("setblock %d %d %d air", b.x, b.y, b.z))
+      table.remove(cola, i)
+    end
+  end
+
+  sleep(intervalo)
+end
