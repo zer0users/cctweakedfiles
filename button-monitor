@@ -1,0 +1,51 @@
+-- bendición.lua
+-- =========================================================
+--  Muestra un botón en el monitor táctil.
+--  Al tocar el botón ejecuta:   say DIOS TE BENDIGA!
+-- =========================================================
+
+-- 1) Enlazar el monitor -----------------------------------
+local monSide = "right"                 -- ← lado donde pegaste el monitor
+local mon     = peripheral.wrap(monSide)
+
+-- 2) Ajustes visuales -------------------------------------
+mon.setTextScale(1)                     -- tamaño de letra
+local W, H = mon.getSize()              -- ancho y alto en píxeles
+
+-- Coordenadas del botón (centrado, 8×3 celdas) ------------
+local bw, bh   = 8, 3                   -- ancho y alto del botón
+local bx1      = math.floor((W - bw)/2) + 1
+local by1      = math.floor((H - bh)/2) + 1
+local bx2      = bx1 + bw - 1
+local by2      = by1 + bh - 1
+
+local function pintarBoton(presionado)
+  local fondo = presionado and colors.green or colors.gray
+  mon.setBackgroundColor(fondo)
+  mon.setTextColor(colors.white)
+  for y = by1, by2 do
+    mon.setCursorPos(bx1, y)
+    mon.write((" "):rep(bw))
+  end
+  mon.setCursorPos(bx1 + math.floor((bw-4)/2), by1 + 1)
+  mon.write("CLICK")
+  mon.setBackgroundColor(colors.black)  -- resto de la pantalla
+end
+
+-- 3) Pantalla inicial -------------------------------------
+mon.setBackgroundColor(colors.black)
+mon.clear()
+mon.setCursorPos(1,1)
+mon.write("Toca el botón :D")
+pintarBoton(false)
+
+-- 4) Bucle de eventos táctiles ----------------------------
+while true do
+  local ev, side, x, y = os.pullEvent("monitor_touch")
+  if side == monSide and x >= bx1 and x <= bx2 and y >= by1 and y <= by2 then
+    pintarBoton(true)                        -- feedback visual
+    commands.exec("say DIOS TE BENDIGA!")    -- ¡el comando!
+    sleep(0.2)                               -- pequeño “flash”
+    pintarBoton(false)
+  end
+end
