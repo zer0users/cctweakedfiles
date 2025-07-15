@@ -1,0 +1,4 @@
+term.clear()
+print('Hi! God bless')
+read()
+term.clear()
