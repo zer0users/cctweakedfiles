@@ -10,7 +10,7 @@ local username = read()
 if username == "" then username = "Anon" end
 
 term.clear()
-print("Connecting to LoveChat as: " .. username .. "\n")
+print("Connecting to LoveChat with love as: " .. username .. "\n")
 
 local lastTs = 0
 
