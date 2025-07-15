@@ -1,7 +1,7 @@
 -- ╔═════════════════════════════════════════════════════╗
--- ║                    LoveChat.lua                    ║
--- ║         Chat multijugador HTTP (GET/POST)          ║
--- ║                © 2025 Aaron con amor               ║
+-- ║                    LoveChat.lua                     ║
+-- ║         Chat multijugador HTTP (GET/POST)           ║
+-- ║                © 2025 Konqi with love               ║
 -- ╚═════════════════════════════════════════════════════╝
 
 ----------------------------------------
