@@ -1,5 +1,5 @@
 -- URL pública de tu servidor Flask (ajústalo tú)
-local URL_BASE = "https://12549efd7170fb20e20bbe79d9f678f1.serveo.net"  -- ← cámbialo por el real
+local URL_BASE = "https://8fdfc3ff64ee.ngrok-free.app"  -- ← cámbialo por el real
 
 term.clear()
 term.setCursorPos(1, 1)
@@ -7,7 +7,7 @@ print("Welcome to LoveChat!")
 print("Please enter your name with love:")
 io.write("> ")
 local username = read()
-if username == "" then username = "Anon" end
+if username == "" then username = "GodLover" end
 
 term.clear()
 print("Connecting to LoveChat with love as: " .. username .. "\n")
