@@ -4,7 +4,7 @@ local URL_BASE = "https://8fdfc3ff64ee.ngrok-free.app"  -- ← cámbialo por el 
 term.clear()
 term.setCursorPos(1, 1)
 print("Welcome to LoveChat!")
-print("Please enter your name with love:")
+print("Please enter your name with love and be respectful:")
 io.write("> ")
 local username = read()
 if username == "" then username = "GodLover" end
