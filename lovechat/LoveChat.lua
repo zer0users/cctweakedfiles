@@ -1,5 +1,5 @@
 -- URL pública de tu servidor Flask (ajústalo tú)
-local URL_BASE = "https://yourname.serveo.net"  -- ← cámbialo por el real
+local URL_BASE = "https://12549efd7170fb20e20bbe79d9f678f1.serveo.net"  -- ← cámbialo por el real
 
 term.clear()
 term.setCursorPos(1, 1)
