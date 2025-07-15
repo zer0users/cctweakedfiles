@@ -1,18 +1,29 @@
--- Ajusta URL_BASE a tu túnel público
-local URL_BASE = "https://yourname.serveo.net"  -- <‑‑ cámbialo
-local username = "Aaron"
+-- URL pública de tu servidor Flask (ajústalo tú)
+local URL_BASE = "https://yourname.serveo.net"  -- ← cámbialo por el real
 
-print("Connecting to LoveChat as " .. username .. "…")
+term.clear()
+term.setCursorPos(1, 1)
+print("Welcome to LoveChat!")
+print("Please enter your name with love:")
+io.write("> ")
+local username = read()
+if username == "" then username = "Anon" end
+
+term.clear()
+print("Connecting to LoveChat as: " .. username .. "\n")
+
 local lastTs = 0
 
--- Función para enviar un mensaje
+-- 📨 Enviar mensaje
 local function sendMessage(txt)
   local body = textutils.serializeJSON({user = username, text = txt})
-  local h = http.post(URL_BASE .. "/send", body, {["Content-Type"]="application/json"})
+  local h = http.post(URL_BASE .. "/send", body, {
+    ["Content-Type"] = "application/json"
+  })
   if h then h.close() end
 end
 
--- Función para obtener mensajes nuevos
+-- 📥 Recibir nuevos mensajes
 local function pollMessages()
   local h = http.get(URL_BASE .. "/messages?after=" .. tostring(lastTs))
   if h then
@@ -25,9 +36,9 @@ local function pollMessages()
   end
 end
 
--- Bucle principal
+-- 🧠 Bucle principal de chat
 parallel.waitForAny(
-  -- lector de teclado
+  -- Entrada del usuario
   function()
     while true do
       io.write("> ")
@@ -35,7 +46,7 @@ parallel.waitForAny(
       if msg ~= "" then sendMessage(msg) end
     end
   end,
-  -- recepción cada 2 s
+  -- Receptor de mensajes cada 2 segundos
   function()
     while true do
       pollMessages()
