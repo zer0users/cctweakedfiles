@@ -1,0 +1,40 @@
+local monitor = peripheral.find("monitor")
+local printer = peripheral.wrap("printer_0")
+
+-- Verifica si los periféricos existen
+if not monitor then
+  print("No se encontró el monitor.")
+  return
+end
+
+if not printer then
+  print("No se encontró la impresora.")
+  return
+end
+
+-- Mensaje para mostrar en pantalla
+monitor.clear()
+monitor.setCursorPos(1, 1)
+monitor.write("Imprimir mensaje?")
+monitor.setCursorPos(1, 2)
+monitor.write("[ IMPRIMIR ]")
+
+-- Función para detectar clics en el botón
+while true do
+  local event, side, x, y = os.pullEvent("monitor_touch")
+  if y == 2 and x >= 1 and x <= 11 then
+    -- Intentar imprimir
+    printer.newPage()
+    printer.setCursorPos(1, 1)
+    printer.write("¡DIOS TE BENDIGA MUCHO!")
+    local ok = printer.endPage()
+    if ok then
+      monitor.setCursorPos(1, 4)
+      monitor.write("¡Impreso correctamente!")
+    else
+      monitor.setCursorPos(1, 4)
+      monitor.write("Error al imprimir.")
+    end
+    break
+  end
+end
