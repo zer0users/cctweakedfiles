@@ -1,0 +1,31 @@
+local name = "printer_0" -- nombre exacto de tu impresora
+local printer = peripheral.wrap(name)
+
+if not printer then
+  print("¡No se pudo encontrar la impresora: " .. name)
+  return
+end
+
+if printer.getPaperLevel() == 0 then
+  print("¡No hay papel en la impresora!")
+  return
+end
+
+-- Iniciar la página
+local started = printer.newPage()
+if not started then
+  print("No se pudo iniciar la página. ¿Quizás está ocupada?")
+  return
+end
+
+-- Imprimir contenido
+printer.setCursorPos(1, 1)
+printer.write("¡DIOS TE BENDIGA MUCHO!")
+
+-- Finalizar página
+local ended = printer.endPage()
+if ended then
+  print("¡Página impresa correctamente!")
+else
+  print("Error al finalizar la página.")
+end
