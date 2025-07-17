@@ -1,0 +1,24 @@
+-- Coordenadas del Command Computer
+local x, y, z = gps.locate()
+if not x then
+  print("¡No hay señal GPS! Asegúrate de tener torres GPS cerca.")
+  return
+end
+
+-- Teletransportar a "zelk" al bloque del Command Computer
+commands.exec("tp zelk " .. x .. " " .. y .. " " .. z)
+
+-- Animación de subir y bajar lentamente
+local arriba = true
+local pasos = 10
+local delay = 0.3 -- segundos entre cada paso
+
+while true do
+  for i = 1, pasos do
+    local dy = arriba and 0.1 or -0.1
+    y = y + dy
+    commands.exec(("tp zelk %.2f %.2f %.2f"):format(x, y, z))
+    sleep(delay)
+  end
+  arriba = not arriba -- Cambia dirección
+end
