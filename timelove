@@ -1,0 +1,15 @@
+-- telefloat-time.lua
+-- Script para Command Computer que sube el tiempo del mundo cada milisegundo
+
+local function setTimeIncremental()
+  local t = 0
+  while true do
+    commands.exec("time set " .. t)
+    -- Aumenta en 1 tick (~1 ms real ~50 ms MC tick)
+    t = (t + 1) % 24000  -- reinicia al día (24000 ticks)
+    sleep(0.05)  -- espera 0.05 segundos (~1 tick de Minecraft)
+  end
+end
+
+-- Inicio del loop
+setTimeIncremental()
