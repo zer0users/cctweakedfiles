@@ -1,0 +1,19 @@
+local printer = peripheral.wrap("printer_0")
+
+-- Verificamos que haya papel
+if printer.getPaperLevel() == 0 then
+  print("¡La impresora no tiene papel!")
+  return
+end
+
+-- Imprimir el mensaje
+printer.newPage()
+printer.setCursorPos(1, 1)
+printer.write("¡DIOS TE BENDIGA MUCHO!")
+local ok = printer.endPage()
+
+if ok then
+  print("¡Impreso correctamente!")
+else
+  print("Error al imprimir.")
+end
