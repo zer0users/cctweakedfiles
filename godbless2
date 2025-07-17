@@ -1,0 +1,53 @@
+-- Buscar el monitor conectado vía módem
+local monitor = peripheral.find("monitor")
+
+-- Verificar que encontró el monitor
+if not monitor then
+  print("No se encontró un monitor.")
+  return
+end
+
+-- Configurar el monitor
+monitor.setTextScale(1)
+monitor.setBackgroundColor(colors.black)
+monitor.setTextColor(colors.white)
+monitor.clear()
+
+-- Coordenadas del botón
+local buttonX = 5
+local buttonY = 3
+local buttonWidth = 20
+local buttonHeight = 3
+
+-- Función para dibujar el botón
+local function drawButton()
+  monitor.setBackgroundColor(colors.blue)
+  for y = 0, buttonHeight - 1 do
+    monitor.setCursorPos(buttonX, buttonY + y)
+    monitor.write((" "):rep(buttonWidth))
+  end
+
+  -- Escribir el texto centrado
+  local text = "Haz clic aquí"
+  local textX = buttonX + math.floor((buttonWidth - #text) / 2)
+  local textY = buttonY + math.floor(buttonHeight / 2)
+  monitor.setCursorPos(textX, textY)
+  monitor.setTextColor(colors.white)
+  monitor.write(text)
+end
+
+-- Dibujar el botón inicialmente
+drawButton()
+
+-- Esperar eventos de toque
+while true do
+  local event, side, x, y = os.pullEvent("monitor_touch")
+  if x >= buttonX and x <= (buttonX + buttonWidth - 1) and y >= buttonY and y <= (buttonY + buttonHeight - 1) then
+    monitor.setBackgroundColor(colors.black)
+    monitor.clear()
+    monitor.setCursorPos(2, 2)
+    monitor.setTextColor(colors.green)
+    monitor.write("¡DIOS TE BENDIGA!")
+    break
+  end
+end
